@@ -4,12 +4,13 @@
 		<title>外星人下 100 层</title>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
 		<link rel="icon" href="./resource/headshot.png" sizes="16x16" />
 		<style>
+			@media screen and (orientation: portrait) {
+				body {
+					display: none;
+				}
+			}
 			/* 测试机宽高：w - 1290, y - 709 */
 			body {
 				background-repeat: no-repeat;
@@ -290,9 +291,35 @@
 				}
 			}
 
+			// 定义处理触摸开始事件的函数
+			function handleTouchStart(event) {
+				// 获取触摸点的位置
+				var touchX = event.touches[0].clientX;
+				var screenWidth = window.innerWidth;
+
+				// 判断是否按下了左半屏幕
+				if (touchX < screenWidth / 2) {
+					player.key_a = true;
+					player.f = "left";
+				}
+
+				if (touchX > screenWidth / 2) {
+					player.key_d = true;
+					player.f = "right";
+				}
+			}
+
+			// 定义处理触摸结束事件的函数
+			function handleTouchEnd(event) {
+				player.key_a = false;
+				player.key_d = false;
+			}
+
 			// 监听键盘按下和松开事件
 			window.addEventListener("keydown", handleKeyDown);
 			window.addEventListener("keyup", handleKeyUp);
+			document.addEventListener("touchstart", handleTouchStart);
+			document.addEventListener("touchend", handleTouchEnd);
 
 			function getPosition(x, y) {
 				let ans;
@@ -378,17 +405,6 @@
 				} else player.d = true;
 			}
 
-			// 请求横屏方向
-			function lockLandscapeOrientation() {
-				if (screen.orientation && screen.orientation.lock) {
-					screen.orientation.lock("landscape");
-				} else if (screen.lockOrientation) {
-					screen.lockOrientation("landscape");
-				}
-			}
-
-			lockLandscapeOrientation();
-
 			// 定义游戏循环的函数
 			function gameLoop() {
 				// 在这里实现游戏逻辑
@@ -402,23 +418,6 @@
 			}
 			// 启动游戏循环
 			gameLoop();
-			// function checkOrientation() {
-			// 	if (window.orientation === 90 || window.orientation === -90) {
-			// 		// 横屏方向
-			// 		document.body.style.overflow = "hidden"; // 隐藏滚动条，防止横屏滚动
-			// 		// 执行你的横屏切换逻辑
-			// 	} else {
-			// 		// 竖屏方向
-			// 		document.body.style.overflow = "auto"; // 恢复滚动条
-			// 		// 执行你的竖屏切换逻辑
-			// 	}
-			// }
-
-			// // 初始加载时检测屏幕方向
-			// checkOrientation();
-
-			// // 监听屏幕方向变化
-			// window.addEventListener("orientationchange", checkOrientation);
 		</script>
 	</body>
 </html>
